@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DDJ-FLX6-GT – Web MIDI Logger</title>
+  <meta name="description" content="Log every MIDI message from your controller. Host on GitHub Pages.">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>DDJ-FLX6-GT • Web MIDI Logger & Mapper</h1>
+      <div class="row">
+        <span class="pill"><span class="dot bad" id="connDot"></span><span id="connText">MIDI not connected</span></span>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- LEFT: Controls + Log + Mapper -->
+      <section class="card split">
+        <div class="controls">
+          <label for="inputSel">Input:</label>
+          <select id="inputSel"></select>
+
+          <label for="outputSel">Output:</label>
+          <select id="outputSel"></select>
+
+          <button id="reqBtn">Request MIDI</button>
+          <button id="clearBtn" class="ghost">Clear Log</button>
+          <button id="dlBtn" title="Download CSV">Export CSV</button>
+          <button id="saveMapBtn" class="ghost">Save Map</button>
+          <button id="dlMapBtn" class="ghost">Export Map JSON</button>
+        </div>
+        <div class="row">
+          <label><input type="checkbox" id="wantSysex"> request SysEx</label>
+          <label><input type="checkbox" id="showHex" checked> show hex</label>
+          <label><input type="checkbox" id="timestamps" checked> timestamps</label>
+          <label><input type="checkbox" id="autoscroll" checked> autoscroll</label>
+        </div>
+
+        <div class="card card--inner">
+          <div class="row row--between">
+            <strong>Live Log</strong>
+            <span class="tiny">Tips: Move a knob, press a pad, nudge jogs. If nothing shows, that control may be HID-only.</span>
+          </div>
+          <div class="logwrap" id="logWrap">
+            <table id="logTbl">
+              <thead>
+                <tr>
+                  <th class="nowrap">#</th>
+                  <th class="nowrap">Time</th>
+                  <th>Device</th>
+                  <th>Type</th>
+                  <th>Ch</th>
+                  <th>Data</th>
+                  <th>Raw</th>
+                </tr>
+              </thead>
+              <tbody id="logBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card card--inner">
+          <div class="row row--between">
+            <strong>Learn / Map controls</strong>
+            <span class="tiny">Start learning → move a control → name it → Add Mapping → Save/Export.</span>
+          </div>
+          <div class="learn">
+            <button id="learnBtn">Start learning</button>
+            <input class="name" id="mapName" placeholder="name this control (e.g. CH1_FADER)">
+            <button id="addMapBtn" class="ghost">Add Mapping</button>
