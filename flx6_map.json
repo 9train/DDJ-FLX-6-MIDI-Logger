@@ -1,113 +1,320 @@
 [
-  { "name": "LOAD 1", "key": "", "type": "", "ch": null, "code": null, "target": "btn_LOAD_1" },
-  { "name": "LOAD 3", "key": "", "type": "", "ch": null, "code": null, "target": "btn_LOAD_3" },
-  { "name": "BACK",   "key": "", "type": "", "ch": null, "code": null, "target": "btn_BACK" },
-  { "name": "ROTARY SELECTOR", "key": "", "type": "", "ch": null, "code": null, "target": "rotary_SELECTOR" },
-  { "name": "VIEW",   "key": "", "type": "", "ch": null, "code": null, "target": "btn_VIEW" },
-  { "name": "DECK4/SAMPLER", "key": "", "type": "", "ch": null, "code": null, "target": "switch_DECK4_SAMPLER" },
-
-  { "name": "IN/4BEAT L", "key": "", "type": "", "ch": null, "code": null, "target": "btn_IN4BEAT_L" },
-  { "name": "OUT L", "key": "", "type": "", "ch": null, "code": null, "target": "btn_OUT_L" },
-  { "name": "RELOOP/EXIT L", "key": "", "type": "", "ch": null, "code": null, "target": "btn_RELOOP_EXIT_L" },
-  { "name": "CALL ◀ L", "key": "", "type": "", "ch": null, "code": null, "target": "btn_CALL_LEFT_L" },
-  { "name": "CALL ▶ L", "key": "", "type": "", "ch": null, "code": null, "target": "btn_CALL_RIGHT_L" },
-  { "name": "MEMORY L", "key": "", "type": "", "ch": null, "code": null, "target": "btn_MEM_L" },
-  { "name": "MERGE FX SELECT L", "key": "", "type": "", "ch": null, "code": null, "target": "btn_MERGEFX_SEL_L" },
-  { "name": "MERGE FX KNOB L",   "key": "", "type": "cc", "ch": null, "code": null, "target": "knob_MERGEFX_L" },
-
-  { "name": "PLAY L", "key": "", "type": "", "ch": null, "code": null, "target": "btn_PLAY_L" },
-  { "name": "CUE L",  "key": "", "type": "", "ch": null, "code": null, "target": "btn_CUE_L" },
-  { "name": "DECK SELECT L", "key": "", "type": "", "ch": null, "code": null, "target": "btn_DECK_SELECT_L" },
-  { "name": "JOG CUTTER L",  "key": "", "type": "", "ch": null, "code": null, "target": "btn_JOG_CUTTER_L" },
-  { "name": "HOT CUE MODE L",  "target": "mode_HOTCUE_L" },
-  { "name": "PAD FX MODE L",   "target": "mode_PADFX_L" },
-  { "name": "BEAT JUMP MODE L","target": "mode_BEATJUMP_L" },
-  { "name": "SAMPLER MODE L",  "target": "mode_SAMPLER_L" },
-
-  { "name": "PAD L 1", "target": "pad_L_1" },
-  { "name": "PAD L 2", "target": "pad_L_2" },
-  { "name": "PAD L 3", "target": "pad_L_3" },
-  { "name": "PAD L 4", "target": "pad_L_4" },
-  { "name": "PAD L 5", "target": "pad_L_5" },
-  { "name": "PAD L 6", "target": "pad_L_6" },
-  { "name": "PAD L 7", "target": "pad_L_7" },
-  { "name": "PAD L 8", "target": "pad_L_8" },
-
-  { "name": "JOG L TOUCH/NUDGE", "target": "jog_L" },
-  { "name": "SYNC L",  "target": "btn_BEAT_SYNC_L" },
-  { "name": "MASTER L","target": "btn_MASTER_L" },
-  { "name": "TEMPO L", "target": "slider_TEMPO_L" },
-
-  { "name": "IN/4BEAT R", "target": "btn_IN4BEAT_R" },
-  { "name": "OUT R", "target": "btn_OUT_R" },
-  { "name": "RELOOP/EXIT R", "target": "btn_RELOOP_EXIT_R" },
-  { "name": "CALL ◀ R", "target": "btn_CALL_LEFT_R" },
-  { "name": "CALL ▶ R", "target": "btn_CALL_RIGHT_R" },
-  { "name": "MEMORY R", "target": "btn_MEM_R" },
-  { "name": "MERGE FX SELECT R", "target": "btn_MERGEFX_SEL_R" },
-  { "name": "MERGE FX KNOB R",   "target": "knob_MERGEFX_R" },
-
-  { "name": "PLAY R", "target": "btn_PLAY_R" },
-  { "name": "CUE R",  "target": "btn_CUE_R" },
-  { "name": "DECK SELECT R", "target": "btn_DECK_SELECT_R" },
-  { "name": "JOG CUTTER R",  "target": "btn_JOG_CUTTER_R" },
-  { "name": "HOT CUE MODE R",  "target": "mode_HOTCUE_R" },
-  { "name": "PAD FX MODE R",   "target": "mode_PADFX_R" },
-  { "name": "BEAT JUMP MODE R","target": "mode_BEATJUMP_R" },
-  { "name": "SAMPLER MODE R",  "target": "mode_SAMPLER_R" },
-
-  { "name": "PAD R 1", "target": "pad_R_1" },
-  { "name": "PAD R 2", "target": "pad_R_2" },
-  { "name": "PAD R 3", "target": "pad_R_3" },
-  { "name": "PAD R 4", "target": "pad_R_4" },
-  { "name": "PAD R 5", "target": "pad_R_5" },
-  { "name": "PAD R 6", "target": "pad_R_6" },
-  { "name": "PAD R 7", "target": "pad_R_7" },
-  { "name": "PAD R 8", "target": "pad_R_8" },
-
-  { "name": "JOG R TOUCH/NUDGE", "target": "jog_R" },
-  { "name": "SYNC R",  "target": "btn_BEAT_SYNC_R" },
-  { "name": "MASTER R","target": "btn_MASTER_R" },
-  { "name": "TEMPO R", "target": "slider_TEMPO_R" },
-
-  { "name": "TRIM CH1",   "target": "trim_ch1" },
-  { "name": "EQ HI CH1",  "target": "eq_hi_ch1" },
-  { "name": "EQ MID CH1", "target": "eq_mid_ch1" },
-  { "name": "EQ LOW CH1", "target": "eq_low_ch1" },
-  { "name": "FILTER CH1", "target": "filter_ch1" },
-  { "name": "CUE CH1",    "target": "cue_ch1" },
-  { "name": "FADER CH1",  "target": "fader_ch1" },
-
-  { "name": "TRIM CH2",   "target": "trim_ch2" },
-  { "name": "EQ HI CH2",  "target": "eq_hi_ch2" },
-  { "name": "EQ MID CH2", "target": "eq_mid_ch2" },
-  { "name": "EQ LOW CH2", "target": "eq_low_ch2" },
-  { "name": "FILTER CH2", "target": "filter_ch2" },
-  { "name": "CUE CH2",    "target": "cue_ch2" },
-  { "name": "FADER CH2",  "target": "fader_ch2" },
-
-  { "name": "TRIM CH3",   "target": "trim_ch3" },
-  { "name": "EQ HI CH3",  "target": "eq_hi_ch3" },
-  { "name": "EQ MID CH3", "target": "eq_mid_ch3" },
-  { "name": "EQ LOW CH3", "target": "eq_low_ch3" },
-  { "name": "FILTER CH3", "target": "filter_ch3" },
-  { "name": "CUE CH3",    "target": "cue_ch3" },
-  { "name": "FADER CH3",  "target": "fader_ch3" },
-
-  { "name": "TRIM CH4",   "target": "trim_ch4" },
-  { "name": "EQ HI CH4",  "target": "eq_hi_ch4" },
-  { "name": "EQ MID CH4", "target": "eq_mid_ch4" },
-  { "name": "EQ LOW CH4", "target": "eq_low_ch4" },
-  { "name": "FILTER CH4", "target": "filter_ch4" },
-  { "name": "CUE CH4",    "target": "cue_ch4" },
-  { "name": "FADER CH4",  "target": "fader_ch4" },
-
-  { "name": "CROSSFADER", "target": "xfader" },
-
-  { "name": "BEAT FX SELECT", "target": "btn_BEATFX_SELECT" },
-  { "name": "BEAT FX CH",     "target": "btn_BEATFX_CH" },
-  { "name": "BEAT −",         "target": "btn_BEAT_MINUS" },
-  { "name": "BEAT +",         "target": "btn_BEAT_PLUS" },
-  { "name": "BEAT FX LEVEL",  "target": "knob_BEATFX_LEVEL" },
-  { "name": "BEAT FX ON",     "target": "btn_BEATFX_ON" }
-]
+  {
+    "name": "KNOB X5F MERGEFX X5F L",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "knob_x5F_MERGEFX_x5F_L"
+  },
+  {
+    "name": "BTN X5F MERGEFX X5F SEL X5F L",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "btn_x5F_MERGEFX_x5F_SEL_x5F_L"
+  },
+  {
+    "name": "BTN X5F JOG X5F CUTTER X5F L",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "btn_x5F_JOG_x5F_CUTTER_x5F_L"
+  },
+  {
+    "name": "BTN X5F DECK X5F SELECT X5F L",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "btn_x5F_DECK_x5F_SELECT_x5F_L"
+  },
+  {
+    "name": "JOG X5F L",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "jog_x5F_L"
+  },
+  {
+    "name": "MODE X5F HOTCUE X5F L",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "mode_x5F_HOTCUE_x5F_L"
+  },
+  {
+    "name": "MODE X5F PADFX X5F L",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "mode_x5F_PADFX_x5F_L"
+  },
+  {
+    "name": "MODE X5F BEATJUMP X5F L",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "mode_x5F_BEATJUMP_x5F_L"
+  },
+  {
+    "name": "MODE X5F SAMPLER X5F L",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "mode_x5F_SAMPLER_x5F_L"
+  },
+  {
+    "name": "PAD X5F L X5F 1",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "pad_x5F_L_x5F_1"
+  },
+  {
+    "name": "PAD X5F L X5F 2",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "pad_x5F_L_x5F_2"
+  },
+  {
+    "name": "PAD X5F L X5F 3",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "pad_x5F_L_x5F_3"
+  },
+  {
+    "name": "PAD X5F L X5F 4",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "pad_x5F_L_x5F_4"
+  },
+  {
+    "name": "PAD X5F L X5F 5",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "pad_x5F_L_x5F_5"
+  },
+  {
+    "name": "PAD X5F L X5F 6",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "pad_x5F_L_x5F_6"
+  },
+  {
+    "name": "PAD X5F L X5F 7",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "pad_x5F_L_x5F_7"
+  },
+  {
+    "name": "PAD X5F L X5F 8",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "pad_x5F_L_x5F_8"
+  },
+  {
+    "name": "SLIDER X5F TEMPO X5F L",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "slider_x5F_TEMPO_x5F_L"
+  },
+  {
+    "name": "BTN X5F LOAD X5F 1",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "btn_x5F_LOAD_x5F_1"
+  },
+  {
+    "name": "BTN X5F LOAD X5F 2",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "btn_x5F_LOAD_x5F_2"
+  },
+  {
+    "name": "BTN X5F LOAD X5F 3",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "btn_x5F_LOAD_x5F_3"
+  },
+  {
+    "name": "BTN X5F LOAD X5F 4",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "btn_x5F_LOAD_x5F_4"
+  },
+  {
+    "name": "TRIM X5F CH1",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "trim_x5F_ch1"
+  },
+  {
+    "name": "EQ X5F HI X5F CH1",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "eq_x5F_hi_x5F_ch1"
+  },
+  {
+    "name": "EQ X5F MID X5F CH1",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "eq_x5F_mid_x5F_ch1"
+  },
+  {
+    "name": "EQ X5F LOW X5F CH1",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "eq_x5F_low_x5F_ch1"
+  },
+  {
+    "name": "FILTER X5F CH1",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "filter_x5F_ch1"
+  },
+  {
+    "name": "CUE X5F CH1",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "cue_x5F_ch1"
+  },
+  {
+    "name": "SLIDER X5F CH1",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "slider_x5F_ch1"
+  },
+  {
+    "name": "TRIM X5F CH2",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "trim_x5F_ch2"
+  },
+  {
+    "name": "EQ X5F HI X5F CH2",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "eq_x5F_hi_x5F_ch2"
+  },
+  {
+    "name": "EQ X5F MID X5F CH2",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "eq_x5F_mid_x5F_ch2"
+  },
+  {
+    "name": "EQ X5F LOW X5F CH2",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "eq_x5F_low_x5F_ch2"
+  },
+  {
+    "name": "FILTER X5F CH2",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "filter_x5F_ch2"
+  },
+  {
+    "name": "CUE X5F CH2",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "cue_x5F_ch2"
+  },
+  {
+    "name": "SLIDER X5F CH2",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "slider_x5F_ch2"
+  },
+  {
+    "name": "TRIM X5F CH3",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "trim_x5F_ch3"
+  },
+  {
+    "name": "EQ X5F HI X5F CH3",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "eq_x5F_hi_x5F_ch3"
+  },
+  {
+    "name": "EQ X5F MID X5F CH3",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "eq_x5F_mid_x5F_ch3"
+  },
+  {
+    "name": "EQ X5F LOW X5F CH3",
+    "key": "",
+    "type": "",
+    "ch": null,
+    "code": null,
+    "target": "eq_x5F_l
