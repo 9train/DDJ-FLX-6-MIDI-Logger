@@ -11,6 +11,8 @@ import {
 import {
   loadMappings, saveMappings, addMapping, deleteMapping, downloadJSON
 } from './mapper.js';
+// NEW: import board
+import { initBoard, consumeInfo } from './board.js';
 
 let mappings = loadMappings();
 let learning = false;
@@ -25,6 +27,9 @@ function onMIDIMessage(e){
 
   // visuals
   updateVisuals(info);
+
+  // NEW: forward to animated board
+  consumeInfo(info);
 
   // log
   addLogRow({
@@ -55,7 +60,6 @@ async function initMIDI(){
     fillDeviceSelects(listInputs(), listOutputs());
     access.onstatechange = () => {
       fillDeviceSelects(listInputs(), listOutputs());
-      // rebind to current selections
       changePorts();
     };
   }catch(err){
@@ -73,21 +77,17 @@ function changePorts(){
 }
 
 function wireUI(){
-  // Build visuals and key handlers
   buildVisuals(); handleArrowKeys();
 
-  // Buttons
   els.reqBtn.addEventListener('click', initMIDI);
   els.clearBtn.addEventListener('click', clearLog);
   els.dlBtn.addEventListener('click', downloadCSV);
   els.saveMapBtn.addEventListener('click', () => { saveMappings(mappings); flashBtn(els.saveMapBtn); });
   els.dlMapBtn.addEventListener('click', () => downloadJSON(mappings));
 
-  // Combo changes
   els.inputSel.addEventListener('change', changePorts);
   els.outputSel.addEventListener('change', changePorts);
 
-  // Learn mode
   els.learnBtn.addEventListener('click', ()=>{
     learning = !learning;
     els.learnBtn.textContent = learning ? 'Stop learning' : 'Start learning';
@@ -95,7 +95,6 @@ function wireUI(){
     els.lastMsg.style.color = learning ? '#cde2ff' : '#9fb2de';
   });
 
-  // Add mapping
   els.addMapBtn.addEventListener('click', ()=>{
     if (!lastLearnMsg){ alert('Move a control while learning first.'); return; }
     const data = new Uint8Array(lastLearnMsg.data);
@@ -107,11 +106,14 @@ function wireUI(){
     drawMap();
   });
 
-  // Connection pill LED test
   document.querySelector('.pill').addEventListener('click', sendTestNote);
 
-  // First draw of map
   drawMap();
+
+  // NEW: boot the animated board (loads SVG + JSON map)
+  initBoard({ hostId: 'boardHost' }).catch(err=>{
+    console.warn('Board init failed:', err);
+  });
 }
 
 function drawMap(){
