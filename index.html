@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DDJ‑FLX6‑GT – Web MIDI Logger</title>
+  <meta name="description" content="Log every MIDI message from your controller. Host on GitHub Pages.">
+  <style>
+    :root{
+      --bg: #0b0d12;
+      --panel:#121623;
+      --muted:#97a0b3;
+      --text:#e9eefb;
+      --accent:#6ea8fe;
+      --good:#4ade80;
+      --warn:#f59e0b;
+      --bad:#ef4444;
+      --chip:#1b2133;
+      --radius:16px;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    html,body{height:100%;margin:0;background:radial-gradient(1200px 600px at 80% -10%,#1c2237 0%,#0b0d12 50%,#0b0d12 100%);color:var(--text);font-family:var(--sans)}
+    .wrap{max-width:1200px;margin:24px auto;padding:0 16px}
+    header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:16px}
+    h1{font-size:clamp(22px,3vw,30px);margin:0;letter-spacing:.3px}
+    .card{background:var(--panel);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}
+    .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+    @media (max-width: 980px){.grid{grid-template-columns:1fr}}
+    label{font-size:14px;color:var(--muted)}
+    select,button,input[type="checkbox"]{accent-color:var(--accent)}
+    .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    .pill{background:var(--chip);border-radius:999px;padding:6px 10px;font-size:12px;color:var(--muted)}
+    .pill .dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px;vertical-align:middle}
+    .ok{background:var(--good)} .warn{background:var(--warn)} .bad{background:var(--bad)}
+    .controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    .controls select,.controls button{height:36px;border-radius:10px;border:1px solid #2a3350;background:#0f1423;color:var(--text);padding:0 10px}
+    .controls button{background:linear-gradient(180deg,#1e2a4a,#11172c);cursor:pointer}
+    .controls button:hover{filter:brightness(1.1)}
+    .controls .ghost{background:transparent;border-color:#2a3350}
+    .split{display:grid;grid-template-columns:1fr;gap:10px}
+
+    /* activity LEDs */
+    .leds{display:grid;grid-template-columns:repeat(16,1fr);gap:6px}
+    .led{height:14px;border-radius:6px;background:#1b2133;opacity:.5;transition:all .12s ease}
+    .led.active{opacity:1;box-shadow:0 0 12px rgba(110,168,254,.75), inset 0 0 8px rgba(110,168,254,.6);background:linear-gradient(180deg,#6ea8fe,#3a69d6)}
+
+    /* log table */
+    table{width:100%;border-collapse:collapse}
+    th,td{font-family:var(--mono);font-size:12px;padding:8px 10px;border-bottom:1px solid #212946}
+    th{position:sticky;top:0;background:#121623;z-index:1;color:#a9b2c7;text-align:left}
+    tbody tr:hover{background:#0f1423}
+    .nowrap{white-space:nowrap}
+    .muted{color:var(--muted)}
+    .badge{display:inline-block;border:1px solid #33406b;padding:1px 6px;border-radius:999px;font-size:11px;margin-left:6px;color:#b5c0de}
+
+    /* footer */
+    footer{margin-top:16px;color:#8f98ad;font-size:12px}
+    a{color:#9cc1ff}
+    .tiny{font-size:11px;color:#8f98ad}
+
+    /* learn/map panel */
+    .learn{
+      display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px
+    }
+    input[type="text"].name{height:36px;border-radius:10px;border:1px solid #2a3350;background:#0f1423;color:var(--text);padding:0 10px;min-width:220px}
+    .maplist{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;margin-top:10px}
+    .mapitem{background:#0f1423;border:1px solid #2a3350;border-radius:12px;padding:10px}
+    .mapitem .k{font-family:var(--mono);font-size:12px;color:#b5c0de}
+    .mapitem .v{font-size:13px}
+
+    /* sticky side panel for visual keys */
+    .vis{display:grid;grid-template-columns:1fr;gap:10px}
+    .bars{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
+    .bar{height:46px;background:#0f1423;border:1px solid #2a3350;border-radius:10px;position:relative;overflow:hidden}
+    .bar>span{position:absolute;bottom:0;left:0;right:0;height:0;background:linear-gradient(180deg,#6ea8fe,#284594)}
+    .bar label{position:absolute;top:4px;left:6px;font-size:11px;color:#9fb2de}
+
+    .hint{font-size:12px;color:#9fb2de}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>DDJ‑FLX6‑GT • Web MIDI Logger & Mapper</h1>
+      <div class="row">
+        <span class="pill"><span class="dot bad" id="connDot"></span><span id="connText">MIDI not connected</span></span>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- LEFT: Controls + Log + Mapper -->
+      <section class="card split">
+        <div class="controls">
+          <label for="inputSel">Input:</label>
+          <select id="inputSel"></select>
+
+          <label for="outputSel">Output:</label>
+          <select id="outputSel"></select>
+
+          <button id="reqBtn">Request MIDI</button>
+          <button id="clearBtn" class="ghost">Clear Log</button>
+          <button id="dlBtn" title="Download CSV">Export CSV</button>
+          <button id="saveMapBtn" class="ghost">Save Map</button>
+          <button id="dlMapBtn" class="ghost">Export Map JSON</button>
+        </div>
+        <div class="row">
+          <label><input type="checkbox" id="wantSysex"> request SysEx</label>
+          <label><input type="checkbox" id="showHex" checked> show hex</label>
+          <label><input type="checkbox" id="timestamps" checked> timestamps</label>
+          <label><input type="checkbox" id="autoscroll" checked> autoscroll</label>
+        </div>
+
+        <div class="card" style="background:#0d1222;border:1px solid #2a3350">
+          <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:6px">
+            <strong>Live Log</strong>
+            <span class="tiny">Tips: Move a knob, press a pad, nudge jogs. If nothing shows, that control may be HID‑only, not MIDI.</span>
+          </div>
+          <div style="max-height:380px;overflow:auto;border-radius:8px" id="logWrap">
+            <table id="logTbl">
+              <thead>
+                <tr>
+                  <th class="nowrap">#</th>
+                  <th class="nowrap">Time</th>
+                  <th>Device</th>
+                  <th>Type</th>
+                  <th>Ch</th>
+                  <th>Data</th>
+                  <th>Raw</th>
+                </tr>
+              </thead>
+              <tbody id="logBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card" style="background:#0d1222;border:1px solid #2a3350">
+          <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:6px">
+            <strong>Learn / Map controls</strong>
+            <span class="tiny">Click <em>Start learning</em>, move a control, then name it. Repeat. Save and export when done.</span>
+          </div>
+          <div class="learn">
+            <button id="learnBtn">Start learning</button>
+            <input class="name" id="mapName" placeholder="name this control (e.g. CH1_FADER)">
+            <button id="addMapBtn" class="ghost">Add Mapping</button>
+            <span class="hint" id="lastMsg">Waiting…</span>
+          </div>
+          <div class="maplist" id="mapList"></div>
+        </div>
+      </section>
+
+      <!-- RIGHT: Activity LEDs + CC Bars + Notes -->
+      <aside class="card vis">
+        <div>
+          <strong>Channel Activity</strong>
+          <div class="leds" id="chanLeds"></div>
+        </div>
+        <div>
+          <strong>CC Levels (0‑127)</strong>
+          <div class="bars" id="ccBars"></div>
+        </div>
+        <div>
+          <strong>Notes (on/off)</strong>
+          <div class="leds" id="noteLeds"></div>
+          <div class="tiny" style="margin-top:6px">Shows notes 0–127 in windows of 16. Use ←/→ to change range.</div>
+        </div>
+      </aside>
+    </div>
+
+    <footer>
+      Works best in Chrome/Edge over HTTPS (GitHub Pages). Safari has limited Web MIDI. Your DDJ‑FLX6‑GT exposes some controls as HID (jogs, etc.), which won’t appear via Web MIDI. For those you’d need a native bridge later. 
+      <br>Made for quick hacking: no build step, just push this single file.
+    </footer>
+  </div>
+
+  <script>
+  // ---------- State ----------
+  let midiAccess = null;
+  let currentInput = null;
+  let currentOutput = null;
+  let logCount = 0;
+  let learning = false;
+  let lastLearnMsg = null; // the latest MIDIMessageEvent while learning
+  const mappings = JSON.parse(localStorage.getItem('flx6_map')||'[]');
+
+  // ---------- DOM ----------
+  const inputSel = document.getElementById('inputSel');
+  const outputSel = document.getElementById('outputSel');
+  const reqBtn = document.getElementById('reqBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const dlBtn = document.getElementById('dlBtn');
+  const timestamps = document.getElementById('timestamps');
+  const autoscroll = document.getElementById('autoscroll');
+  const showHex = document.getElementById('showHex');
+  const wantSysex = document.getElementById('wantSysex');
+  const logBody = document.getElementById('logBody');
+  const logWrap = document.getElementById('logWrap');
+  const connDot = document.getElementById('connDot');
+  const connText = document.getElementById('connText');
+  const learnBtn = document.getElementById('learnBtn');
+  const mapName = document.getElementById('mapName');
+  const addMapBtn = document.getElementById('addMapBtn');
+  const mapList = document.getElementById('mapList');
+  const saveMapBtn = document.getElementById('saveMapBtn');
+  const dlMapBtn = document.getElementById('dlMapBtn');
+
+  // Visual arrays
+  const chanLeds = document.getElementById('chanLeds');
+  const ccBars = document.getElementById('ccBars');
+  const noteLeds = document.getElementById('noteLeds');
+  const NOTE_WINDOW = 16; // shown at once
+  let noteBase = 0; // first note index for LEDs
+
+  // Build LEDs and bars
+  function buildVisuals(){
+    chanLeds.innerHTML='';
+    for(let i=0;i<16;i++){ const d=document.createElement('div'); d.className='led'; d.title='Channel '+(i+1); chanLeds.appendChild(d); }
+
+    ccBars.innerHTML='';
+    for(let i=0;i<16;i++){ const wrap=document.createElement('div'); wrap.className='bar';
+      const lab=document.createElement('label'); lab.textContent='CC'+(i+noteBase);
+      const span=document.createElement('span'); span.style.height='0%';
+      wrap.appendChild(lab); wrap.appendChild(span); ccBars.appendChild(wrap); }
+
+    buildNoteLeds();
+  }
+  function buildNoteLeds(){
+    noteLeds.innerHTML='';
+    for(let i=0;i<NOTE_WINDOW;i++){ const d=document.createElement('div'); d.className='led'; d.title='Note '+(i+noteBase); noteLeds.appendChild(d); }
+  }
+
+  // Keyboard to slide note window
+  window.addEventListener('keydown', (e)=>{
+    if(e.key==='ArrowRight'){ noteBase = Math.min(112, noteBase+16); buildNoteLeds(); }
+    if(e.key==='ArrowLeft'){ noteBase = Math.max(0, noteBase-16); buildNoteLeds(); }
+  });
+
+  // -------- MIDI helpers --------
+  function toHex(bytes){ return Array.from(bytes).map(b=>b.toString(16).padStart(2,'0')).join(' '); }
+  function ts(){ const d=new Date(); return d.toLocaleTimeString(); }
+
+  function classify(data){
+    const [status,d1,d2] = data;
+    const type = status >> 4; // high nibble
+    const ch = (status & 0x0f) + 1;
+    switch(type){
+      case 0x8: return {type:'noteoff', ch, d1, d2};
+      case 0x9: return {type: d2? 'noteon':'noteoff', ch, d1, d2};
+      case 0xB: return {type:'cc', ch, controller:d1, value:d2};
+      case 0xE: return {type:'pitch', ch, value: ((d2<<7)|d1) - 8192};
+      default:  return {type:'other', ch, d1, d2};
+    }
+  }
+
+  function setConnState(ok){
+    connDot.className = 'dot ' + (ok? 'ok':'bad');
+    connText.textContent = ok? 'MIDI connected' : 'MIDI not connected';
+  }
+
+  function fillDeviceSelects(){
+    // inputs
+    inputSel.innerHTML='';
+    for(const input of midiAccess.inputs.values()){
+      const opt=document.createElement('option');
+      opt.value=input.id; opt.textContent=`${input.name} ${input.manufacturer? '— '+input.manufacturer:''}`;
+      inputSel.appendChild(opt);
+    }
+    // outputs
+    outputSel.innerHTML='';
+    for(const output of midiAccess.outputs.values()){
+      const opt=document.createElement('option');
+      opt.value=output.id; opt.textContent=`${output.name} ${output.manufacturer? '— '+output.manufacturer:''}`;
+      outputSel.appendChild(opt);
+    }
+  }
+
+  function bindSelectedPorts(){
+    const inId = inputSel.value; const outId = outputSel.value;
+    if(currentInput){ currentInput.onmidimessage = null; }
+    currentInput = inId? midiAccess.inputs.get(inId) : null;
+    currentOutput = outId? midiAccess.outputs.get(outId) : null;
+    if(currentInput){ currentInput.onmidimessage = onMIDIMessage; }
+    setConnState(!!currentInput);
+  }
+
+  function onMIDIMessage(e){
+    const data = new Uint8Array(e.data);
+    lastLearnMsg = e;
+    const info = classify(data);
+
+    // Visuals
+    const chanEl = chanLeds.children[(info.ch-1)] || null; if(chanEl){ flash(chanEl); }
+    if(info.type==='cc'){
+      const idx = info.controller - noteBase; // reuse base as window origin
+      const wrap = ccBars.children[(idx % 16)];
+      if(wrap){ const bar=wrap.querySelector('span'); const pct = Math.round((info.value/127)*100); bar.style.height=pct+'%'; wrap.querySelector('label').textContent = `CC${info.controller}·${info.value}`; flash(wrap); }
+    }
+    if(info.type==='noteon' || info.type==='noteoff'){
+      const idx = info.d1 - noteBase; const led = noteLeds.children[(idx % NOTE_WINDOW)]; if(led){ info.type==='noteon'? led.classList.add('active') : led.classList.remove('active'); flash(led); led.title=`Note ${info.d1}`; }
+    }
+
+    // Log row
+    addLogRow({
+      time: timestamps.checked? ts() : '',
+      device: currentInput? currentInput.name : 'n/a',
+      type: info.type,
+      ch: info.ch,
+      data: (info.type==='cc')? `CC ${info.controller} → ${info.value}`:
+            (info.type==='noteon'||info.type==='noteoff')? `Note ${info.d1} vel ${info.d2}`:
+            (info.type==='pitch')? `PB ${info.value}`:
+            `${info.d1 ?? ''} ${info.d2 ?? ''}`,
+      raw: showHex.checked? toHex(data) : Array.from(data).join(',')
+    });
+
+    // If learning, prefill the name box with a heuristic
+    if(learning){
+      const guess = (info.type==='cc')? `CC_${info.controller}`
+                  : (info.type==='noteon'||info.type==='noteoff')? `NOTE_${info.d1}`
+                  : info.type.toUpperCase();
+      if(!mapName.value) mapName.value = guess;
+      document.getElementById('lastMsg').textContent = `Captured ${guess} on ch ${info.ch}`;
+      document.getElementById('lastMsg').style.color = '#cde2ff';
+    }
+  }
+
+  function flash(el){
+    el.classList.add('active');
+    setTimeout(()=>el.classList.remove('active'), 120);
+  }
+
+  function addLogRow({time, device, type, ch, data, raw}){
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="nowrap">${(++logCount).toString().padStart(4,'0')}</td>
+      <td class="nowrap">${time||''}</td>
+      <td>${escapeHtml(device)}</td>
+      <td class="nowrap"><span class="badge">${type}</span></td>
+      <td>${ch}</td>
+      <td>${escapeHtml(data)}</td>
+      <td class="muted">${escapeHtml(raw)}</td>`;
+    logBody.appendChild(tr);
+    if(autoscroll.checked){ logWrap.scrollTop = logWrap.scrollHeight; }
+  }
+
+  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c])); }
+
+  // -------- Mapper --------
+  function renderMap(){
+    mapList.innerHTML='';
+    mappings.forEach((m,idx)=>{
+      const d=document.createElement('div'); d.className='mapitem';
+      d.innerHTML = `<div class="k">${escapeHtml(m.key)}</div>
+                     <div class="v">${escapeHtml(m.name)}</div>
+                     <div class="tiny" style="margin-top:6px">${escapeHtml(m.device||'any')} • ch ${m.ch} • ${m.type} ${m.code}</div>
+                     <div class="row" style="margin-top:6px">
+                       <button data-i="${idx}" class="ghost">Delete</button>
+                     </div>`;
+      d.querySelector('button').onclick = ()=>{ mappings.splice(idx,1); persistMap(); renderMap(); };
+      mapList.appendChild(d);
+    });
+  }
+  function persistMap(){ localStorage.setItem('flx6_map', JSON.stringify(mappings)); }
+
+  addMapBtn.addEventListener('click', ()=>{
+    if(!lastLearnMsg){ alert('Move a control while learning first.'); return; }
+    const data = new Uint8Array(lastLearnMsg.data);
+    const info = classify(data);
+    const name = mapName.value.trim()||'UNNAMED';
+    const key = `${info.type}:${info.ch}:${info.type==='cc'? info.controller : info.type==='noteon'||info.type==='noteoff'? info.d1 : info.d1}`;
+    mappings.push({
+      name,
+      key,
+      device: currentInput? currentInput.name: '',
+      ch: info.ch,
+      type: info.type,
+      code: (info.type==='cc'? info.controller : (info.type==='noteon'||info.type==='noteoff')? info.d1 : info.d1)
+    });
+    mapName.value='';
+    persistMap();
+    renderMap();
+  });
+
+  saveMapBtn.addEventListener('click', ()=>{ persistMap(); flash(saveMapBtn); });
+  dlMapBtn.addEventListener('click', ()=>{
+    const blob = new Blob([JSON.stringify(mappings,null,2)], {type:'application/json'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='flx6_map.json'; a.click(); URL.revokeObjectURL(a.href);
+  });
+
+  learnBtn.addEventListener('click', ()=>{
+    learning = !learning;
+    learnBtn.textContent = learning? 'Stop learning' : 'Start learning';
+    document.getElementById('lastMsg').textContent = learning? 'Learning… move a control' : 'Paused';
+    document.getElementById('lastMsg').style.color = learning? '#cde2ff' : '#9fb2de';
+  });
+
+  // -------- CSV export --------
+  dlBtn.addEventListener('click', ()=>{
+    const rows = [['#','time','device','type','channel','data','raw']];
+    // walk the DOM for simplicity
+    for(const tr of logBody.querySelectorAll('tr')){
+      const tds=[...tr.children].map(td=>td.innerText);
+      rows.push(tds);
+    }
+    const csv = rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], {type:'text/csv'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='midi_log.csv'; a.click(); URL.revokeObjectURL(a.href);
+  });
+
+  // -------- Clear --------
+  clearBtn.addEventListener('click', ()=>{ logBody.innerHTML=''; logCount=0; });
+
+  // -------- MIDI access --------
+  reqBtn.addEventListener('click', async()=>{
+    try{
+      midiAccess = await navigator.requestMIDIAccess({ sysex: wantSysex.checked });
+      setConnState(true);
+      midiAccess.onstatechange = ()=>{ fillDeviceSelects(); bindSelectedPorts(); };
+      fillDeviceSelects();
+      bindSelectedPorts();
+    }catch(err){ alert('MIDI request failed: '+err.message); setConnState(false); }
+  });
+
+  inputSel.addEventListener('change', bindSelectedPorts);
+  outputSel.addEventListener('change', bindSelectedPorts);
+
+  // Build visuals and render stored map at boot
+  buildVisuals();
+  renderMap();
+
+  // Optional: simple test LED ping (if your device listens to note/cc for LEDs)
+  // Click the connection pill to toggle an LED test on note 36.
+  document.querySelector('.pill').addEventListener('click', ()=>{
+    if(!currentOutput){ return; }
+    // note on channel 1, note 36, velocity 100; then off
+    currentOutput.send([0x90, 36, 100]);
+    setTimeout(()=> currentOutput.send([0x80, 36, 0]), 120);
+  });
+
+  </script>
+</body>
+</html>
