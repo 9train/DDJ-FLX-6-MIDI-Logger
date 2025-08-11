@@ -71,3 +71,36 @@
             <button id="learnBtn">Start learning</button>
             <input class="name" id="mapName" placeholder="name this control (e.g. CH1_FADER)">
             <button id="addMapBtn" class="ghost">Add Mapping</button>
+            <span class="hint" id="lastMsg">Waiting…</span>
+          </div>
+          <div class="maplist" id="mapList"></div>
+        </div>
+      </section>
+
+      <!-- RIGHT: Activity LEDs + CC Bars + Notes -->
+      <aside class="card vis">
+        <div>
+          <strong>Channel Activity</strong>
+          <div class="leds" id="chanLeds"></div>
+        </div>
+        <div>
+          <strong>CC Levels (0-127)</strong>
+          <div class="bars" id="ccBars"></div>
+        </div>
+        <div>
+          <strong>Notes (on/off)</strong>
+          <div class="leds" id="noteLeds"></div>
+          <div class="tiny" style="margin-top:6px">Shows notes 0–127 in windows of 16. Use ←/→ to change range.</div>
+        </div>
+      </aside>
+    </div>
+
+    <footer>
+      Works best in Chrome/Edge over HTTPS (GitHub Pages). Safari has limited Web MIDI. Some FLX6-GT controls are HID (not MIDI).
+      <br>Single-page, no build. Push and go.
+    </footer>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
